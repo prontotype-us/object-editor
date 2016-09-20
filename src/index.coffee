@@ -86,7 +86,6 @@ NewRow = React.createClass
             @refs.key.htmlEl.focus()
 
     onChange: (key) -> (e) =>
-        console.log '[NewRow onChange]', key, e.target.value
         value = e.target.value
         change = {}
         change[key] = value
@@ -100,7 +99,6 @@ NewRow = React.createClass
     trySave: ->
         console.log '[NewRow trySave]'
         if nonNullKeys(errors = @errors()).length > 0
-            console.log 'errors', errors
             @setState {errors}
         else
             @save()
@@ -134,34 +132,26 @@ NewRow = React.createClass
                     else
                         @refs.key.htmlEl.focus()
 
-    onBlur: ->
-        console.log document.activeElement
-        console.log 'key', @refs.key.htmlEl.focus
-        console.log 'value', @refs.value.htmlEl.focus
-        # @props.onCancel()
-
     render: ->
         <div className='new-row'>
-            <ContentEditable ref='key' html={@state.key} onChange=@onChange('key') onKeyDown=@onKeyDown('key') placeholder='new key' disabled={@props.static_key?} onBlur=@onBlur />
-            <ContentEditable ref='value' html={asString @state.value} onChange=@onChange('value') onKeyDown=@onKeyDown('value') placeholder='new value' />
+            <ContentEditable
+                ref='key'
+                className={'key' + if @state.errors.key then ' invalid' else ''}
+                html={@state.key}
+                onChange=@onChange('key')
+                onKeyDown=@onKeyDown('key')
+                placeholder='new key'
+                disabled={@props.static_key?}
+            />
+            <ContentEditable
+                ref='value'
+                className={'value value-' + typeof(parseValue @state.value) + if @state.errors.value then ' invalid' else ''}
+                html={asString @state.value}
+                onChange=@onChange('value')
+                onKeyDown=@onKeyDown('value')
+                placeholder='new value'
+            />
         </div>
-
-            # <input
-            #     value=@state.key
-            #     className={'key' + if @state.errors.key then ' invalid' else ''}
-            #     ref='key'
-            #     name='key'
-            #     placeholder='new key'
-            #     onChange=@onChange('key')
-            #     onKeyDown=@onKeyDown('key') />
-            # <input
-            #     value=@state.value
-            #     className={'value value-' + typeof(parseValue @state.value) + if @state.errors.value then ' invalid' else ''}
-            #     ref='value'
-            #     name='value'
-            #     placeholder='new value'
-            #     onChange=@onChange('value')
-            #     onKeyDown=@onKeyDown('value') />
 
 ObjectEditor = React.createClass
     displayName: 'ObjectEditor'
@@ -273,7 +263,4 @@ ObjectEditor = React.createClass
         else
             <EditableField className='value-editor' value=@state.object onSave=@saveEntire />
 
-module.exports = {
-    EditableField
-    ObjectEditor
-}
+module.exports = ObjectEditor

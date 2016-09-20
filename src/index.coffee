@@ -227,10 +227,11 @@ ObjectEditor = React.createClass
 
     render: ->
         if typeof @state.object == 'object'
+            editor_class_name = 'object-editor '
             if Array.isArray @state.object
-                editor_class_name = 'array-editor'
+                editor_class_name += 'edit-array'
             else
-                editor_class_name = 'object-editor'
+                editor_class_name += 'edit-object'
 
             <div className=editor_class_name>
                 {Object.keys(@state.object).map (key) =>
@@ -270,6 +271,8 @@ ObjectEditor = React.createClass
             </div>
 
         else
-            <EditableField className='value value-editor' value=@state.object onSave=@saveEntire />
+            <div className='object-editor edit-value'>
+                <EditableField className='value' value=@state.object onSave=@saveEntire />
+            </div>
 
 module.exports = ObjectEditor

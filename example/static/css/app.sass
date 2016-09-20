@@ -46,73 +46,71 @@ button, .button
         border-color: rgba($colors.light_blue, 0.4)
 
 .object-editor
-    padding-left: $padding.default
-    border-left: 3px solid $colors.purple
 
-    > .adder
+    .edit-object, &.edit-object
+        padding-left: $padding.default
+        border-left: 3px solid $colors.purple
+
+        > .adder
+            color: $colors.purple
+
+    .key-extra-object
         color: $colors.purple
 
-.key-extra-object
-    color: $colors.purple
+    .edit-array, &.edit-array
+        padding-left: $padding.default
+        border-left: 3px solid $colors.orange
 
-.array-editor
-    padding-left: $padding.default
-    border-left: 3px solid $colors.orange
+        > .adder
+            color: $colors.orange
 
-    > .adder
+    .key-extra-array
         color: $colors.orange
 
-.key-extra-array
-    color: $colors.orange
+    .editable-field
+        display: inline-block
+        margin-right: $padding.default
 
-.editable-field
-    display: inline-block
-    margin-right: $padding.default
+    .row
+        position: relative
 
-.row
-    position: relative
+    .actions
+        position: absolute
+        top: 0
+        right: 0
 
-.actions
-    position: absolute
-    top: 0
-    right: 0
+    .editable-field.key
+        font-weight: bold
+        color: inherit !important
 
-.editable-field.key
-    font-weight: bold
-    color: inherit !important
+    .delete
+        color: red
+        font-size: 12px
 
-.delete
-    color: red
-    font-size: 12px
+    .edited [contenteditable]
+        outline-color: $colors.light_yellow
 
-// .edited
-//     background: $colors.dark_tan
+    .new-row [contenteditable]
+        display: inline-block
+        outline-color: $colors.light_yellow
 
-.edited [contenteditable]
-    outline-color: $colors.light_yellow
+        &[disabled]
+            background: transparent
 
-.new-row [contenteditable]
-    display: inline-block
-    // background: rgba(#444, 0.3)
-    outline-color: $colors.light_yellow
+    .invalid
+        background: red
 
-    &[disabled]
-        background: transparent
+    [contenteditable]
+        display: inline-block
 
-.invalid
-    background: red
-
-[contenteditable]
-    display: inline-block
-
-.type-string
-    color: $colors.blue
-.value.type-string
-    &:before
-        content: '"'
-    &:after
-        content: '"'
-.type-number
-    color: $colors.green
-.type-boolean
-    color: $colors.pink
+    .type-string
+        color: $colors.blue
+    .value.type-string
+        &:before
+            content: '"'
+        &:after
+            content: '"'
+    .type-number
+        color: $colors.green
+    .type-boolean
+        color: $colors.pink

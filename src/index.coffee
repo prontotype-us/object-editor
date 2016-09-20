@@ -226,13 +226,15 @@ ObjectEditor = React.createClass
         @setState {adding: false}, @focusAdder
 
     render: ->
-        if typeof @state.object == 'object'
-            editor_class_name = 'object-editor '
-            if Array.isArray @state.object
-                editor_class_name += 'edit-array'
-            else
-                editor_class_name += 'edit-object'
+        editor_class_name = (@props.className or '') + ' object-editor '
+        if Array.isArray @state.object
+            editor_class_name += 'edit-array'
+        else if typeof @state.object == 'object'
+            editor_class_name += 'edit-object'
+        else
+            editor_class_name += 'edit-value'
 
+        if typeof @state.object == 'object'
             <div className=editor_class_name>
                 {Object.keys(@state.object).map (key) =>
                     value = @state.object[key]
@@ -271,7 +273,7 @@ ObjectEditor = React.createClass
             </div>
 
         else
-            <div className='object-editor edit-value'>
+            <div className=editor_class_name>
                 <EditableField className='value' value=@state.object onSave=@saveEntire />
             </div>
 

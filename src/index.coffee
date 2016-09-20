@@ -33,7 +33,8 @@ EditableField = React.createClass
 
     onChange: (e) ->
         value = e.target.value
-        value = parseValue value
+        if !@props.no_type
+            value = parseValue value
         edited = value != @props.value
         @setState {value, edited}
 
@@ -55,17 +56,17 @@ EditableField = React.createClass
 
     render: ->
         className = (@props.className or '') + ' editable-field' + if @state.edited then ' edited' else ''
-        className += ' type-' + typeof @state.value
+        if !@props.no_type
+            className += ' type-' + typeof @state.value
         if !@props.value?
             className += ' new'
+
         <div className=className>
             <ContentEditable ref='input' html={asString @state.value} onChange=@onChange disabled=@props.disabled onKeyDown=@onKeyDown placeholder=@props.placeholder onBlur=@save />
             {if @empty()
                 <span className='placeholder'>{@props.placeholder}</span>
             }
         </div>
-
-# <input size=1 value=@state.value onChange=@onChange onKeyDown=@onKeyDown placeholder='new value' disabled=@props.disabled />
 
 asString = (value) ->
     if typeof value == 'object'
@@ -89,8 +90,6 @@ NewRow = React.createClass
 
     onChange: (key) -> (e) =>
         value = e.target?.value || e
-        # if key == 'value'
-        #     value = parseValue value
         change = {}
         change[key] = value
         @setState change
@@ -109,7 +108,6 @@ NewRow = React.createClass
     save: ->
         console.log '[NewRow save]'
         {key, value} = @state
-        # value = parseValue value
         row = {}
         row[key] = value
         @props.onSave row
@@ -153,6 +151,7 @@ NewRow = React.createClass
                 value={@state.key}
                 onSave=@saveKey
                 disabled={@props.static_key?}
+                no_type=true
             />
             <EditableField
                 ref='value'
@@ -240,7 +239,7 @@ ObjectEditor = React.createClass
                     value = @state.object[key]
                     <div className='row' key=key>
                         <span className='key'>
-                            <EditableField onSave=@updateKey(key) className='key' value=key disabled={Array.isArray @state.object} />
+                            <EditableField onSave=@updateKey(key) className='key' value=key disabled={Array.isArray @state.object} no_type=true />
                             {if typeof value == 'object'
                                 if Array.isArray value
                                     key_class_name = 'key-extra-array'

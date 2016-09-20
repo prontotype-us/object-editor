@@ -1,0 +1,12 @@
+{
+    "name": "object-editor",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/prontotype-us/object-editor"
+    },
+    "main": "lib/index.js",
+    "scripts": {
+        "build": "cjsx --bare -o lib -c src"
+    }
+}

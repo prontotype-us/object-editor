@@ -5,6 +5,7 @@
 
 $colors
     blue: #6492c0
+    light_blue: #a4b2f0
     green: #66c184
     brown: #bd673d
     red: #e06666
@@ -42,7 +43,7 @@ button, .button
     &:hover
         background: rgba(#fff, 0.1)
     &:focus
-        border-color: rgba(#fff, 0.1)
+        border-color: rgba($colors.light_blue, 0.4)
 
 .object-editor
     padding-left: $padding.default
@@ -76,29 +77,42 @@ button, .button
     top: 0
     right: 0
 
-.key
+.editable-field.key
     font-weight: bold
-    .editable-field
-        color: inherit !important
+    color: inherit !important
 
 .delete
     color: red
     font-size: 12px
 
-.edited
-    background: $colors.dark_tan
+// .edited
+//     background: $colors.dark_tan
+
+.edited [contenteditable]
+    outline-color: $colors.light_yellow
 
 .new-row [contenteditable]
     display: inline-block
-    background: rgba(#444, 0.3)
-    margin-right: $padding.default
+    // background: rgba(#444, 0.3)
+    outline-color: $colors.light_yellow
 
     &[disabled]
         background: transparent
 
-.value-string
+.invalid
+    background: red
+
+[contenteditable]
+    display: inline-block
+
+.type-string
     color: $colors.blue
-.value-number
+.value.type-string
+    &:before
+        content: '"'
+    &:after
+        content: '"'
+.type-number
     color: $colors.green
-.value-boolean
+.type-boolean
     color: $colors.pink

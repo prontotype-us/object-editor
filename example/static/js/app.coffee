@@ -1,8 +1,8 @@
 React = require 'react'
 ReactDOM = require 'react-dom'
-{ObjectEditor} = require 'object-editor'
+ObjectEditor = require 'object-editor'
 
-test_object = {
+test_object = ['asdf', {
     name: "Jones"
     age: 55
     cats: [
@@ -15,7 +15,7 @@ test_object = {
             age: 10
         }
     ]
-}
+}]
 
 App = React.createClass
     getInitialState: ->

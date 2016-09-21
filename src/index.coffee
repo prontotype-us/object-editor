@@ -232,6 +232,8 @@ ObjectEditor = React.createClass
             editor_class_name += 'edit-object'
         else
             editor_class_name += 'edit-value'
+        if key = @props.key_name
+            editor_class_name += ' value-' + key
 
         if typeof @state.object == 'object'
             <div className=editor_class_name>
@@ -247,14 +249,14 @@ ObjectEditor = React.createClass
                                     key_class_name = 'key-extra-object'
                                 <span className=key_class_name>
                                     {if Array.isArray value
-                                        "[ " + value.length + " ]"
+                                        "[" + value.length + "]"
                                     else
-                                        "{ " + Object.keys(value).length + " }"
+                                        "{" + Object.keys(value).length + "}"
                                     }
                                 </span>
                             }
                         </span>
-                        <ObjectEditor object=value onSave=@saveRow(key) />
+                        <ObjectEditor object=value onSave=@saveRow(key) key_name=key />
                         <div className='actions'>
                             <a onClick=@deleteRow(key) className='delete button'><i className='fa fa-close' /></a>
                         </div>

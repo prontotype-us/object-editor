@@ -22,6 +22,16 @@ $padding
     small: 5px
     default: 10px
 
+.spinner
+    display: flex
+    align-items: center
+    justify-content: center
+    padding: 100px
+
+    i.fa
+        font-size: 20px
+        margin-right: 20px
+
 body
     font: 15px/25px "Roboto", sans-serif
     background: #000
@@ -124,9 +134,70 @@ button, .button
     background: url(http://www.publicdomainpictures.net/pictures/50000/velka/tabby-cat-dark-background.jpg)
     background-size: 100% 100%
     border: 3px dashed yellow
-    font-size: 20px
     border-radius: 10px
     width: 300px
+    [contenteditable]
+        background: rgba(#000, 0.9)
+        border-radius: 10px
+        padding: 2px 5px
     .type-string
         color: yellow
+
+    .value-name
+        font-size: 25px
+        line-height: 25px
+
+.object-editor.value-tickets
+    & > .row > .key
+        display: none
+
+    & > .row > .object-editor
+        width: 500px
+        padding: 30px
+        background: #fff
+        font-family: "Helvetica Neue", Helvetica, sans-serif
+        position: relative
+        margin-top: 10px
+
+        .row
+            position: static
+
+        .key, .adder
+            display: none
+
+        [contenteditable]
+            line-height: 1em
+
+        .row .actions
+            display: none
+
+        .value
+            color: #000
+            &:before, &:after
+                display: none
+
+        .value-price .value
+            font-size: 30px
+            font-family: Georgia, Times, serif
+            font-style: italic
+            position: absolute
+            right: 30px
+            top: 30px
+            &:before
+                content: "$"
+                display: inline
+                font-size: 20px
+                position: relative
+                left: -1px
+                bottom: 5px
+
+        .value-event .value
+            font-weight: bold
+            font-family: Georgia, Times, serif
+            font-size: 20px
+
+        .value-time .value
+            font-family: Georgia, Times, serif
+            margin-top: 5px
+            font-size: 13px
 

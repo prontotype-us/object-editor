@@ -43,10 +43,13 @@ EditableField = React.createClass
             e.preventDefault()
             @save()
         else if e.keyCode == 8 # BACKSPACE
-            if @state.value.length == 0
+            if !@state.value
                 e.preventDefault()
                 @props.onCancel?()
+            else
+                console.log 'value', '"' + @state.value + '"', @state.value.length
         @props.onKeyDown?(e)
+        e.stopPropagation()
 
     save: ->
         console.log '[EditableField save]', @state
@@ -231,6 +234,9 @@ ObjectEditor = React.createClass
     hideAddRow: ->
         @setState {adding: false}, @focusAdder
 
+    selectKeyField: (key) -> =>
+        @refs['key-' + key].focus()
+
     render: ->
         editor_class_name = (@props.className or '') + ' object-editor '
         if Array.isArray @state.object
@@ -251,14 +257,25 @@ ObjectEditor = React.createClass
                     row_class_name = 'row row-' + key
                     key_class_name = 'key'
                     key_class_name += ' key-' + key
+
                     <div className=row_class_name key=key>
                         <span className=key_class_name>
-                            <EditableField onSave=@updateKey(key) className='key' value=key disabled={Array.isArray @state.object} no_type=true />
+                            <EditableField
+                                ref={'key-' + key}
+                                onSave=@updateKey(key)
+                                onCancel=@deleteRow(key)
+                                className='key'
+                                value=key
+                                disabled={Array.isArray @state.object}
+                                no_type=true
+                            />
+
                             {if typeof value == 'object'
                                 if Array.isArray value
                                     extra_class_name = 'extra-array'
                                 else
                                     extra_class_name = 'extra-object'
+
                                 <span className=extra_class_name>
                                     {if Array.isArray value
                                         "[" + value.length + "]"
@@ -268,18 +285,20 @@ ObjectEditor = React.createClass
                                 </span>
                             }
                         </span>
-                        <ObjectEditor object=value onSave=@saveRow(key) key_name=key />
+
+                        <ObjectEditor object=value onSave=@saveRow(key) key_name=key onCancel=@selectKeyField(key) />
                         <div className='actions'>
                             <a onClick=@deleteRow(key) className='delete button'><i className='fa fa-close' /></a>
                         </div>
                     </div>
                 }
+
                 {if typeof @state.object == 'object'
                     if @state.adding
                         if Array.isArray @state.object
-                            <NewRow onSave=@addValue static_key=@state.object.length onCancel=@hideAddRow />
+                            <NewRow ref='new-row' onSave=@addValue static_key=@state.object.length onCancel=@hideAddRow />
                         else
-                            <NewRow onSave=@addRow onCancel=@hideAddRow />
+                            <NewRow ref='new-row' onSave=@addRow onCancel=@hideAddRow />
                     else
                         <button ref='adder' className='adder' onClick=@showAddRow>+</button>
                 }
@@ -287,7 +306,7 @@ ObjectEditor = React.createClass
 
         else
             <div className=editor_class_name>
-                <EditableField className='value' value=@state.object onSave=@saveEntire />
+                <EditableField className='value' value=@state.object onSave=@saveEntire onCancel=@props.onCancel />
             </div>
 
 module.exports = ObjectEditor

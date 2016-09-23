@@ -42,6 +42,11 @@ EditableField = React.createClass
         if e.keyCode == 13
             e.preventDefault()
             @save()
+        else if e.keyCode == 8 # BACKSPACE
+            if @state.value.length == 0
+                e.preventDefault()
+                @props.onCancel?()
+        @props.onKeyDown?(e)
 
     save: ->
         console.log '[EditableField save]', @state
@@ -51,8 +56,19 @@ EditableField = React.createClass
             if @props.clearOnSave
                 @setState {value: ''}
 
+    onFocus: ->
+        el = @refs.input.htmlEl
+        if el.innerHTML.length
+            range = document.createRange()
+            sel = window.getSelection()
+            range.setStart(el, 1)
+            range.collapse(true)
+            sel.removeAllRanges()
+            sel.addRange(range)
+
     focus: ->
-        @refs.input.htmlEl.focus()
+        el = @refs.input.htmlEl
+        el.focus()
 
     render: ->
         className = (@props.className or '') + ' editable-field' + if @state.edited then ' edited' else ''
@@ -62,7 +78,7 @@ EditableField = React.createClass
             className += ' new'
 
         <div className=className>
-            <ContentEditable ref='input' html={asString @state.value} onChange=@onChange disabled=@props.disabled onKeyDown=@onKeyDown placeholder=@props.placeholder onBlur=@save />
+            <ContentEditable ref='input' html={asString @state.value} onChange=@onChange disabled=@props.disabled onKeyDown=@onKeyDown placeholder=@props.placeholder onBlur=@save onFocus=@onFocus />
             {if @empty()
                 <span className='placeholder'>{@props.placeholder}</span>
             }
@@ -125,23 +141,12 @@ NewRow = React.createClass
         @setState {value}, =>
             @trySave()
 
-    onKeyDown: (key) -> (e) =>
-        if e.keyCode == 13 # ENTER
-            e.preventDefault()
-            if key == 'key'
-                @saveKey()
-            else if key == 'value'
-                @saveValue()
-        if e.keyCode == 8 # BACKSPACE
-            if key == 'key'
-                if @state.key.length == 0
-                    @props.onCancel()
-            else if key == 'value'
-                if @state.value.length == 0
-                    if @props.static_key?
-                        @props.onCancel()
-                    else
-                        @refs.key.focus()
+    focusKey: ->
+        console.log 'select?'
+        if @props.static_key?
+            @onCancel()
+        else
+            @refs.key.focus()
 
     render: ->
         <div className='new-row'>
@@ -150,6 +155,7 @@ NewRow = React.createClass
                 className={'key ' + if @state.errors.key then ' invalid' else ''}
                 value={@state.key}
                 onSave=@saveKey
+                onCancel=@props.onCancel
                 disabled={@props.static_key?}
                 no_type=true
             />
@@ -158,6 +164,7 @@ NewRow = React.createClass
                 className={'value ' + if @state.errors.value then ' invalid' else ''}
                 value={asString @state.value}
                 onSave=@saveValue
+                onCancel=@focusKey
             />
         </div>
 
@@ -170,7 +177,7 @@ ObjectEditor = React.createClass
 
     componentWillReceiveProps: (new_props) ->
         if new_object = new_props.object
-            @setState {object: new_object}
+            @setState {object: new_object, adding: false}
 
     saveRow: (key) -> (value) =>
         {object} = @state
@@ -230,6 +237,8 @@ ObjectEditor = React.createClass
             editor_class_name += 'edit-array'
         else if typeof @state.object == 'object'
             editor_class_name += 'edit-object'
+            if type = @state.object.type
+                editor_class_name += ' -type-' + type
         else
             editor_class_name += 'edit-value'
         if key = @props.key_name
@@ -239,15 +248,18 @@ ObjectEditor = React.createClass
             <div className=editor_class_name>
                 {Object.keys(@state.object).map (key) =>
                     value = @state.object[key]
-                    <div className='row' key=key>
-                        <span className='key'>
+                    row_class_name = 'row row-' + key
+                    key_class_name = 'key'
+                    key_class_name += ' key-' + key
+                    <div className=row_class_name key=key>
+                        <span className=key_class_name>
                             <EditableField onSave=@updateKey(key) className='key' value=key disabled={Array.isArray @state.object} no_type=true />
                             {if typeof value == 'object'
                                 if Array.isArray value
-                                    key_class_name = 'key-extra-array'
+                                    extra_class_name = 'extra-array'
                                 else
-                                    key_class_name = 'key-extra-object'
-                                <span className=key_class_name>
+                                    extra_class_name = 'extra-object'
+                                <span className=extra_class_name>
                                     {if Array.isArray value
                                         "[" + value.length + "]"
                                     else

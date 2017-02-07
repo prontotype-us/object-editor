@@ -1,12 +1,17 @@
 {
-    "name": "object-editor",
-    "version": "0.0.1",
-    "repository": {
-        "type": "git",
-        "url": "http://github.com/prontotype-us/object-editor"
-    },
-    "main": "lib/index.js",
-    "scripts": {
-        "build": "cjsx --bare -o lib -c src"
-    }
+  "name": "object-editor",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/prontotype-us/object-editor"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "cjsx --bare -o lib -c src"
+  },
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-contenteditable": "^2.0.2",
+    "react-dom": "^15.4.2"
+  }
 }

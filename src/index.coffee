@@ -26,8 +26,8 @@ EditableField = React.createClass
         edited: false
 
     componentWillReceiveProps: (new_props) ->
-        if new_value = new_props.value
-            @setState {value: new_value}
+        {value} = new_props
+        @setState {value}
 
     empty: -> !@state.value?.length
 
@@ -145,7 +145,6 @@ NewRow = React.createClass
             @trySave()
 
     focusKey: ->
-        console.log 'select?'
         if @props.static_key?
             @onCancel()
         else
@@ -179,8 +178,8 @@ ObjectEditor = React.createClass
         adding: false
 
     componentWillReceiveProps: (new_props) ->
-        if new_object = new_props.object
-            @setState {object: new_object, adding: false}
+        {object} = new_props
+        @setState {object, adding: false}
 
     saveRow: (key) -> (value) =>
         {object} = @state
